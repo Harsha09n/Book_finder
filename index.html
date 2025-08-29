@@ -3,211 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Finder</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Jamie's Weather App</title>
+    <!-- Tailwind CSS for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for the Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            transition: background-color 0.3s ease-in-out;
+        /*
+         * This ensures the HTML and body tags take up the full viewport,
+         * allowing the content to scale and use the entire screen.
+         */
+        html, body {
+            height: 100%;
         }
 
-        header {
-            background-color: #35424a;
-            color: #ffffff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        
-        main {
-            padding: 20px;
-        }
-
-        .search-section {
-            margin-bottom: 20px;
-        }
-
-        .search-section input {
-            padding: 10px;
-            width: 80%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .search-section button {
-            padding: 10px 15px;
-            background-color: #35424a;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .search-section button:hover {
-            background-color: #45a049;
-        }
-        
-        .results-section {
-            margin-top: 20px;
-        }
-
-        .results-section ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .results-section li {
-            background-color: #ffffff;
-            margin: 10px 0;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        footer {
-            background-color: #35424a;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* The following are the original styles that were in the document */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            transition: background-color 0.3s ease-in-out;
+            /* Using the provided image as the background */
+            background-image: url('https://static.vecteezy.com/system/resources/previews/009/362/398/original/blue-dynamic-shape-abstract-background-suitable-for-web-and-mobile-app-backgrounds-eps-10-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Ensures the background doesn't scroll with content */
+            
+            /* Using flexbox to center content vertically and horizontally */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            box-sizing: border-box; /* Ensures padding doesn't cause overflow */
+            overflow-y: auto; /* Adds vertical scrolling if content is too tall */
         }
         
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                padding: 4rem;
+            }
+        }
     </style>
-    <!-- Favicon link -->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
-    <div class="container mx-auto p-4 sm:p-8 flex-grow">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-800">Book Finder 📚</h1>
-            <p class="text-gray-600 mt-2 text-lg">Discover your next great read.</p>
+<body>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+
+        <!-- Header and Search Bar -->
+        <header class="w-full flex flex-col items-center gap-6">
+            <div class="w-full flex justify-between items-center">
+                <!-- Changed text color to dark blue to be visible on the white card -->
+                <h1 class="text-3xl sm:text-4xl font-bold text-blue-800">Jamie's Weather</h1>
+            </div>
+            
+            <div class="w-full flex flex-col sm:flex-row gap-4 sm:gap-2">
+                <input type="text" id="city-input" placeholder="e.g., San Francisco, Paris"
+                       class="flex-1 p-4 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-4 focus:ring-blue-300 transition-shadow duration-300">
+                <button id="get-weather-btn"
+                        class="p-4 text-lg bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    Get Weather
+                </button>
+            </div>
         </header>
 
-        <main class="max-w-3xl mx-auto">
-            <section class="search-section bg-white p-6 rounded-2xl shadow-xl mb-8">
-                <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-                    <input type="text" id="search-input" placeholder="Search for books by title or author..." class="flex-grow p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-300 transition-shadow duration-300" />
-                    <button id="search-button" class="w-full sm:w-auto p-4 bg-blue-600 text-white font-semibold rounded-xl transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                        Search
-                    </button>
-                </div>
-            </section>
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="hidden text-center">
+            <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
 
-            <section class="results-section">
-                <ul id="results-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></ul>
-                <!-- Placeholder for messages (loading, error, no results) -->
-                <div id="status-message" class="text-center text-gray-500 mt-8 text-lg font-medium">
-                    Start by searching for a book!
-                </div>
-            </section>
-        </main>
+        <!-- Weather Display Card -->
+        <div id="weather-display" class="w-full text-center">
+            <p class="text-gray-500 italic text-lg">Enter a city name to see the current conditions.</p>
+        </div>
+
     </div>
-    
-    <footer class="bg-gray-200 text-center p-4">
-        <p class="text-gray-600 text-sm">&copy; 2024 Book Finder. All rights reserved.</p>
-    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('search-input');
-            const searchButton = document.getElementById('search-button');
-            const resultsList = document.getElementById('results-list');
-            const statusMessage = document.getElementById('status-message');
-            
-            // Function to display a status message
-            const showStatus = (message, isError = false) => {
-                statusMessage.textContent = message;
-                statusMessage.className = `text-center mt-8 text-lg font-medium transition-colors duration-300 ${isError ? 'text-red-600' : 'text-gray-500'}`;
-            };
-            
-            // Function to generate a loading skeleton
-            const createSkeleton = () => {
-                const skeleton = document.createElement('div');
-                skeleton.className = "bg-white p-6 rounded-2xl shadow-lg animate-pulse flex flex-col items-center text-center";
-                skeleton.innerHTML = `
-                    <div class="bg-gray-200 rounded-lg w-full h-48 mb-4"></div>
-                    <div class="bg-gray-200 h-6 w-3/4 rounded-md mb-2"></div>
-                    <div class="bg-gray-200 h-4 w-1/2 rounded-md"></div>
-                `;
-                return skeleton;
+            const cityInput = document.getElementById('city-input');
+            const getWeatherBtn = document.getElementById('get-weather-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const weatherDisplay = document.getElementById('weather-display');
+
+            // WMO Weather interpretation codes for icons and descriptions
+            const WMO_CODES = {
+                0: { desc: "Clear sky", icon: "☀️" },
+                1: { desc: "Mainly clear", icon: "🌤️" },
+                2: { desc: "Partly cloudy", icon: "⛅" },
+                3: { desc: "Overcast", icon: "☁️" },
+                45: { desc: "Fog", icon: "�️" },
+                48: { desc: "Depositing rime fog", icon: "🌫️" },
+                51: { desc: "Light Drizzle", icon: "🌦️" },
+                53: { desc: "Moderate Drizzle", icon: "🌧️" },
+                55: { desc: "Dense Drizzle", icon: "🌧️" },
+                56: { desc: "Light Freezing Drizzle", icon: "🌧️❄️" },
+                57: { desc: "Dense Freezing Drizzle", icon: "🌧️❄️" },
+                61: { desc: "Slight Rain", icon: "🌧️" },
+                63: { desc: "Moderate Rain", icon: "🌧️" },
+                65: { desc: "Heavy Rain", icon: "🌧️" },
+                66: { desc: "Light Freezing Rain", icon: "🌧️❄️" },
+                67: { desc: "Heavy Freezing Rain", icon: "🌧️❄️" },
+                71: { desc: "Slight Snow fall", icon: "🌨️" },
+                73: { desc: "Moderate Snow fall", icon: "🌨️" },
+                75: { desc: "Heavy Snow fall", icon: "🌨️" },
+                77: { desc: "Snow grains", icon: "❄️" },
+                80: { desc: "Slight Rain Showers", icon: "🌦️" },
+                81: { desc: "Moderate Rain Showers", icon: "🌧️" },
+                82: { desc: "Violent Rain Showers", icon: "🌧️" },
+                85: { desc: "Slight Snow Showers", icon: "🌨️" },
+                86: { desc: "Heavy Snow Showers", icon: "🌨️" },
+                95: { desc: "Thunderstorm", icon: "⛈️" },
+                96: { desc: "Thunderstorm with slight hail", icon: "⛈️" },
+                99: { desc: "Thunderstorm with heavy hail", icon: "⛈️" }
             };
 
-            // Function to perform the search
-            const searchBooks = async () => {
-                const query = searchInput.value.trim();
-                if (query === '') {
-                    showStatus('Please enter a search term.', true);
+            const getCoordinates = async (cityName) => {
+                const geoApiUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1`;
+                const response = await fetch(geoApiUrl);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    return {
+                        latitude: data.results[0].latitude,
+                        longitude: data.results[0].longitude,
+                        name: data.results[0].name
+                    };
+                }
+                return null;
+            };
+
+            const getWeatherData = async (lat, lon) => {
+                const weatherApiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m,uv_index,precipitation_probability,apparent_temperature,is_day&forecast_days=1&timezone=auto`;
+                const response = await fetch(weatherApiUrl);
+                const data = await response.json();
+                return data;
+            };
+
+            const displayWeather = async () => {
+                const cityName = cityInput.value.trim();
+                if (cityName === "") {
+                    weatherDisplay.innerHTML = `<p class="text-red-500 text-lg">Please enter a city name.</p>`;
                     return;
                 }
-                
-                resultsList.innerHTML = ''; // Clear previous results
-                
-                // Show loading skeletons
-                for (let i = 0; i < 6; i++) {
-                    resultsList.appendChild(createSkeleton());
-                }
-                showStatus('Searching for books...');
-                
-                try {
-                    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const data = await response.json();
-                    
-                    resultsList.innerHTML = ''; // Clear skeletons
-                    
-                    if (data.docs.length === 0) {
-                        showStatus('No books found. Try a different search.');
-                    } else {
-                        statusMessage.innerHTML = ''; // Clear status message
-                        data.docs.forEach(book => {
-                            const bookItem = document.createElement('li');
-                            bookItem.className = "bg-white p-6 rounded-2xl shadow-lg transition-transform transform hover:-translate-y-2 hover:shadow-2xl duration-300 ease-in-out flex flex-col items-center text-center";
-                            
-                            const author = book.author_name ? book.author_name.join(', ') : 'Unknown Author';
-                            
-                            let coverImage = `<div class="bg-gray-200 rounded-lg w-full h-48 mb-4 flex items-center justify-center text-gray-400">No Cover Image</div>`;
-                            if (book.cover_i) {
-                                coverImage = `<div class="mb-4 w-full">
-                                                  <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" alt="${book.title} cover" class="rounded-lg shadow-md w-full h-auto object-cover" onerror="this.onerror=null;this.src='https://placehold.co/150x225/e5e7eb/4b5563?text=No+Image'" />
-                                              </div>`;
-                            }
 
-                            bookItem.innerHTML = `
-                                ${coverImage}
-                                <h2 class="text-xl font-bold text-gray-800 mb-1">${book.title}</h2>
-                                <p class="text-sm text-gray-500 font-light italic">by ${author}</p>
-                            `;
-                            resultsList.appendChild(bookItem);
-                        });
+                loadingSpinner.classList.remove('hidden');
+                weatherDisplay.innerHTML = ""; // Clear previous content
+
+                try {
+                    const coords = await getCoordinates(cityName);
+                    if (!coords) {
+                        weatherDisplay.innerHTML = `<p class="text-red-500 text-lg">Sorry, could not find that city. Please try a different name.</p>`;
+                        return;
                     }
+
+                    const weather = await getWeatherData(coords.latitude, coords.longitude);
+                    const current = weather.current;
+                    const weatherInfo = WMO_CODES[current.weather_code] || { desc: "Unknown", icon: "❓" };
+
+                    const content = `
+                        <div class="w-full flex flex-col items-center gap-6">
+                            <h2 class="text-4xl sm:text-5xl font-bold text-gray-800">${coords.name}</h2>
+                            <div class="flex items-center gap-6">
+                                <div class="text-7xl sm:text-8xl">${weatherInfo.icon}</div>
+                                <div class="text-6xl sm:text-7xl font-extrabold text-blue-600">${Math.round(current.temperature_2m)}°C</div>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-700">${weatherInfo.desc}</p>
+                            <div class="w-full grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
+                                <div class="p-4 rounded-xl bg-gray-100 flex flex-col items-start">
+                                    <span class="text-3xl mb-1">💨</span>
+                                    <span class="text-gray-500 text-sm">Wind</span>
+                                    <span class="font-semibold">${current.wind_speed_10m} km/h</span>
+                                </div>
+                                <div class="p-4 rounded-xl bg-gray-100 flex flex-col items-start">
+                                    <span class="text-3xl mb-1">💧</span>
+                                    <span class="text-gray-500 text-sm">Humidity</span>
+                                    <span class="font-semibold">${current.relative_humidity_2m}%</span>
+                                </div>
+                                <div class="p-4 rounded-xl bg-gray-100 flex flex-col items-start">
+                                    <span class="text-3xl mb-1">🌞</span>
+                                    <span class="text-gray-500 text-sm">UV Index</span>
+                                    <span class="font-semibold">${Math.round(current.uv_index)}</span>
+                                </div>
+                                <div class="p-4 rounded-xl bg-gray-100 flex flex-col items-start">
+                                    <span class="text-3xl mb-1">☔</span>
+                                    <span class="text-gray-500 text-sm">Precipitation</span>
+                                    <span class="font-semibold">${Math.round(current.precipitation_probability)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    weatherDisplay.innerHTML = content;
+
                 } catch (error) {
-                    showStatus('Failed to fetch books. Please try again later.', true);
-                    resultsList.innerHTML = ''; // Clear skeletons
-                    console.error('Error fetching books:', error);
+                    console.error("Error fetching data:", error);
+                    weatherDisplay.innerHTML = `<p class="text-red-500 text-lg">There was a network error. Please try again later.</p>`;
+                } finally {
+                    loadingSpinner.classList.add('hidden');
                 }
             };
-            
-            // Event listeners for search
-            searchButton.addEventListener('click', searchBooks);
-            searchInput.addEventListener('keypress', (e) => {
+
+            getWeatherBtn.addEventListener('click', displayWeather);
+            cityInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
-                    searchBooks();
+                    displayWeather();
                 }
             });
         });
